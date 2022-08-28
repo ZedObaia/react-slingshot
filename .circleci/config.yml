@@ -1,0 +1,34 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:14.0.1
+    steps:
+      - checkout
+      - run: npm run lint
+
+  test:
+    docker:
+      - image: circleci/node:14.0.1
+    steps:
+      - run: npm run test
+  analyze:
+    docker:
+      - image: circleci/node:14.0.1
+    steps:
+      - run: npm audit
+
+workflows:
+  # Name the workflow "welcome"
+  flow:
+    # Run the welcome/run job in its own container
+    jobs:
+      - build
+      - test:
+        requires:
+          - build
+      - analyze:
+        requires:
+          - test
