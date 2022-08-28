@@ -7,17 +7,26 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - run: npm install
+      - save_cache:
+          paths:
+            - "/src/node_modules"
+          key: "node_modules"
       - run: npm run lint
 
   test:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      - checkout
+      - restore_cache:
+          key: "node_modules"
       - run: npm run test
   analyze:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      - checkout
       - run: npm audit
 
 workflows:
